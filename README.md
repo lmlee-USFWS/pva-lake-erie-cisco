@@ -13,8 +13,8 @@ Information about restoring coregonines to the Great Lakes can be found [here](h
 Start an R session and run these lines:
 
 `list.of.packages <- c("compositions","dplyr","EnvStats","ggplot2","mpmsim","popbio","readxl",
-"reshape2","rhandsontable","rsconnect","shiny","shinyalert","shinycssloaders","shinydashboard","shinyjs",
-"utils","xlsx")`
+"reshape2","rhandsontable","shiny","shinyalert","shinycssloaders","shinydashboard","shinyjs",
+"utils")`
 
 `new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]`
 
