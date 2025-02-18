@@ -10,6 +10,8 @@ Start an R session and run these lines:
 
 `install.packages("shiny")`
 
+`library(shiny)`
+
 `shiny::runGitHub("pva-lake-erie-cisco","lmlee-USFWS")`
 
 
