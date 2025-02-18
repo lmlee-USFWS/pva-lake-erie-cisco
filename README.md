@@ -8,9 +8,13 @@ This repository contains a R Shiny application that allows users to run a popula
 
 Start an R session and run these lines:
 
-`install.packages("shiny")`
+`list.of.packages <- c("compositions","dplyr","EnvStats","ggplot2","mpmsim","popbio","readxl",
+"reshape2","rhandsontable","rsconnect","shiny","shinyalert","shinycssloaders","shinydashboard","shinyjs",
+"utils","xlsx")`
 
-`library(shiny)`
+`new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]`
+
+`if(length(new.packages)) install.packages(new.packages)`
 
 `shiny::runGitHub("pva-lake-erie-cisco","lmlee-USFWS")`
 
