@@ -40,15 +40,15 @@ set.seed(8675309)
 for (j in 1:n.simulations) {
 
 	# Set von Bertalanffy age-length parameters
-  pick.vonB <- sample(1:n.vonB,1,replace=FALSE)
-  Linf <- as.numeric(vonB[pick.vonB,1])
-  K <- as.numeric(vonB[pick.vonB,2])
-  t0 <- as.numeric(vonB[pick.vonB,3])
+  	pick.vonB <- sample(1:n.vonB,1,replace=FALSE)
+  	Linf <- as.numeric(vonB[pick.vonB,1])
+  	K <- as.numeric(vonB[pick.vonB,2])
+  	t0 <- as.numeric(vonB[pick.vonB,3])
 
 	# Set length-weight parameters
-  pick.lw <- sample(1:n.lw,1,replace=FALSE)
-  lw.a <- as.numeric(lw[pick.lw,1])
-  lw.b <- as.numeric(lw[pick.lw,2])
+  	pick.lw <- sample(1:n.lw,1,replace=FALSE)
+  	lw.a <- as.numeric(lw[pick.lw,1])
+  	lw.b <- as.numeric(lw[pick.lw,2])
 
 	# Set fecundity-weight parameters
 	pick.fecund <- sample(1:n.fecund,1,replace=FALSE)
@@ -56,7 +56,7 @@ for (j in 1:n.simulations) {
 	f.b <- as.numeric(fecund[pick.fecund,2])
 	f.type <- fecund[pick.fecund,3]
 	
-  # early life survival
+  	# early life survival
 	eggS.mu <- as.numeric(earlyS[1,2])
 	eggS.var <- as.numeric(earlyS[1,3])
 	fryS.mu <- as.numeric(earlyS[2,2])
@@ -68,7 +68,7 @@ for (j in 1:n.simulations) {
 	eggS <- estBetaParams(eggS.mu,eggS.var)$sim.beta
 	
 	# Set fry survival
-  fryS <- estBetaParams(fryS.mu,fryS.var)$sim.beta
+  	fryS <- estBetaParams(fryS.mu,fryS.var)$sim.beta
 	
 	# Set age-0 survival
 	age0S <- estBetaParams(age0S.mu,age0S.var)$sim.beta
@@ -113,15 +113,15 @@ for (j in 1:n.simulations) {
 	sim.bio[j,4] <- lw.a
 	sim.bio[j,5] <- lw.b
 	sim.bio[j,6] <- f.a
-  sim.bio[j,7] <- f.b
+  	sim.bio[j,7] <- f.b
 	sim.bio[j,8] <- f.type
-  sim.bio[j,9] <- eggS
-  sim.bio[j,10] <- fryS
-  sim.bio[j,11] <- age0S
+  	sim.bio[j,9] <- eggS
+  	sim.bio[j,10] <- fryS
+  	sim.bio[j,11] <- age0S
 
 	# Store Derived Parameters
 	sim.length <- rbind(sim.length,length)
-  sim.weight <- rbind(sim.weight,weight)
+  	sim.weight <- rbind(sim.weight,weight)
 	sim.natmort <- rbind(sim.natmort,natmort)
 	sim.survival <- rbind(sim.survival,survival)
 	sim.fecundity <- rbind(sim.fecundity,fecundity)
@@ -186,7 +186,7 @@ changes.all <- data.frame()
 
 #-Initiate Progress Bar--------------------------------------------------------------------------------------------------------
 pb <- txtProgressBar(min = 0,      			# Minimum value of the progress bar
-                     max = n.simulations,   	# Maximum value of the progress bar
+                     max = n.simulations,   		# Maximum value of the progress bar
                      style = 3,    			# Progress bar style (also available style = 1 and style = 2)
                      width = 50,   			# Progress bar width. Defaults to getOption("width")
                      char = "=")   			# Character used to create the bar
@@ -200,15 +200,14 @@ for (j in 1:n.simulations) {
   Sys.sleep(0.1)
 
 	# Mx for Wild Fish Leslie Matrix
-#	mx <- sexratio * maturity * as.double(sim.fecundity[j,]) * sim.bio[j,9] * sim.bio[j,10] * sim.bio[j,11]
-  fecundity <- as.double(sim.fecundity[j,])
+  	fecundity <- as.double(sim.fecundity[j,])
   
 	# Mx for Stocked Fish Leslie Matrix
 	mx.stocked <- rep(0,max(age))
 
 
 	# Survival of Adult Wild Fish
-  Sw <- as.numeric(sim.survival[j,])
+  	Sw <- as.numeric(sim.survival[j,])
 
 
 	# Weight at Age
@@ -291,9 +290,9 @@ pop.stockpro <- function(n.projections, sexratio, maturity, fecundity, mx.stocke
 	x <- length(Sw)
 	t <- n.projections
 
-  n.wild <- matrix(numeric(x * t), nrow = x)
-  n.stocked.juv <- numeric(t)
-  n.stocked <- matrix(numeric(x * t), nrow = x)
+  	n.wild <- matrix(numeric(x * t), nrow = x)
+  	n.stocked.juv <- numeric(t)
+  	n.stocked <- matrix(numeric(x * t), nrow = x)
 	n.ss <- matrix(numeric(x * t), nrow = x)
 	n.hatchery <- matrix(numeric(x * t), nrow = x)
 	n.mature <- matrix(numeric(x * t), nrow = x)
@@ -305,7 +304,7 @@ pop.stockpro <- function(n.projections, sexratio, maturity, fecundity, mx.stocke
 	pop <- numeric(t)
 	pop.wt <- numeric(t)
 	pop.wild <- numeric(t)
-  pop.stocked <- numeric(t)
+  	pop.stocked <- numeric(t)
 	pop.ss <- numeric(t)
 	pop.hatchery <- numeric(t)
 	pop.recruits <- numeric(t)
@@ -413,7 +412,7 @@ pop.stockpro <- function(n.projections, sexratio, maturity, fecundity, mx.stocke
 	 # lx <- as.double(Sw + (Sw * Schange))
     lx <- Sw
 		mx.new <- mx * lx
-		A.wild <- make_leslie_mpm(survival = lx, fertility = mx.new, n_stages = n.age, split = FALSE)
+		A.wild <- make_leslie_mpm(survival = lx, fecundity = mx.new, n_stages = n.age, split = FALSE)
 		#A.wild[n.age,n.age] <- 0	#==>comment out if using a plus group
 		lambda.Awild[i] <- lambda(A.wild)
 
@@ -423,15 +422,15 @@ pop.stockpro <- function(n.projections, sexratio, maturity, fecundity, mx.stocke
 		n.month.remain <- 12 - stocking.adult$month - 1
 		lx.partial <- lx.month ^ n.month.remain
 		lx.stocked <- lx.partial / 2
-		A.stocked <- make_leslie_mpm(survival = lx.stocked, fertility = mx.stocked, n_stages = n.age, split = FALSE)
+		A.stocked <- make_leslie_mpm(survival = lx.stocked, fecundity = mx.stocked, n_stages = n.age, split = FALSE)
 		#A.stocked[n.age,n.age] <- 0	#==>comment out if using a plus group
 
 		# stocked survivors
-		A.ss <- make_leslie_mpm(survival = lx, fertility = mx.stocked, n_stages = n.age, split = FALSE)
+		A.ss <- make_leslie_mpm(survival = lx, fecundity = mx.stocked, n_stages = n.age, split = FALSE)
 		#A.ss[n.age,n.age] <- 0		#==>comment out if using a plus group
 
 		# recruits of stocked fish
-		A.sr <- make_leslie_mpm(survival = 0, fertility = mx.new, n_stages = n.age, split = FALSE)
+		A.sr <- make_leslie_mpm(survival = 0, fecundity = mx.new, n_stages = n.age, split = FALSE)
 		#A.sr[n.age,n.age] <- 0		#==>comment out if using a plus group
 
 		if (i == 1) {
