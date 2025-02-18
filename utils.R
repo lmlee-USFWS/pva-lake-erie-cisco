@@ -44,27 +44,17 @@ for (j in 1:n.simulations) {
   Linf <- as.numeric(vonB[pick.vonB,1])
   K <- as.numeric(vonB[pick.vonB,2])
   t0 <- as.numeric(vonB[pick.vonB,3])
-#  Linf <- 403.71934
-#  K <- 0.22703
-#  t0 <- -2.45121
 
 	# Set length-weight parameters
   pick.lw <- sample(1:n.lw,1,replace=FALSE)
   lw.a <- as.numeric(lw[pick.lw,1])
   lw.b <- as.numeric(lw[pick.lw,2])
-#  lw.a <- 0.000001276696
-#  lw.b <- 3.348761
-
 
 	# Set fecundity-weight parameters
 	pick.fecund <- sample(1:n.fecund,1,replace=FALSE)
 	f.a <- as.numeric(fecund[pick.fecund,1])
 	f.b <- as.numeric(fecund[pick.fecund,2])
 	f.type <- fecund[pick.fecund,3]
-#  f.a <- -440.35
-#  f.b <- 44.48
-#  f.type <- "weight"
-
 	
   # early life survival
 	eggS.mu <- as.numeric(earlyS[1,2])
@@ -76,15 +66,12 @@ for (j in 1:n.simulations) {
 
 	# Set egg survival
 	eggS <- estBetaParams(eggS.mu,eggS.var)$sim.beta
-#  eggS <- 0.0865
 	
 	# Set fry survival
   fryS <- estBetaParams(fryS.mu,fryS.var)$sim.beta
-#  fryS <- 0.0611
 	
 	# Set age-0 survival
 	age0S <- estBetaParams(age0S.mu,age0S.var)$sim.beta
-#  age0S <- 0.0556
 	
 
 	# Compute Growth, Fecundity, Mortality, and Survival
@@ -384,8 +371,8 @@ pop.stockpro <- function(n.projections, sexratio, maturity, fecundity, mx.stocke
 
 	  if (i <= n.stockpro && any(stocking.pro$age > 0)) {
 	    stocking.adult <- subset(stocking.pro,stocking.pro$age > 0)
-      n.var <- runif(n.stockpro, -0.25, 0.25)
-      stocking.adult[-1:-2] <- stocking.adult[-1:-2] + (stocking.adult[-1:-2] * n.var)
+      	    n.var <- runif(n.stockpro, -0.25, 0.25)
+            stocking.adult[-1:-2] <- stocking.adult[-1:-2] + (stocking.adult[-1:-2] * n.var)
 	  } else {
 	    stocking.adult <- data.frame(matrix(nrow = 1, ncol = n.stockpro + 2))
 	    stocking.adult[1,1] <- 1
@@ -426,7 +413,7 @@ pop.stockpro <- function(n.projections, sexratio, maturity, fecundity, mx.stocke
 	 # lx <- as.double(Sw + (Sw * Schange))
     lx <- Sw
 		mx.new <- mx * lx
-		A.wild <- make_leslie_mpm(survival = lx, fecundity = mx.new, n_stages = n.age, split = FALSE)
+		A.wild <- make_leslie_mpm(survival = lx, fertility = mx.new, n_stages = n.age, split = FALSE)
 		#A.wild[n.age,n.age] <- 0	#==>comment out if using a plus group
 		lambda.Awild[i] <- lambda(A.wild)
 
@@ -436,15 +423,15 @@ pop.stockpro <- function(n.projections, sexratio, maturity, fecundity, mx.stocke
 		n.month.remain <- 12 - stocking.adult$month - 1
 		lx.partial <- lx.month ^ n.month.remain
 		lx.stocked <- lx.partial / 2
-		A.stocked <- make_leslie_mpm(survival = lx.stocked, fecundity = mx.stocked, n_stages = n.age, split = FALSE)
+		A.stocked <- make_leslie_mpm(survival = lx.stocked, fertility = mx.stocked, n_stages = n.age, split = FALSE)
 		#A.stocked[n.age,n.age] <- 0	#==>comment out if using a plus group
 
 		# stocked survivors
-		A.ss <- make_leslie_mpm(survival = lx, fecundity = mx.stocked, n_stages = n.age, split = FALSE)
+		A.ss <- make_leslie_mpm(survival = lx, fertility = mx.stocked, n_stages = n.age, split = FALSE)
 		#A.ss[n.age,n.age] <- 0		#==>comment out if using a plus group
 
 		# recruits of stocked fish
-		A.sr <- make_leslie_mpm(survival = 0, fecundity = mx.new, n_stages = n.age, split = FALSE)
+		A.sr <- make_leslie_mpm(survival = 0, fertility = mx.new, n_stages = n.age, split = FALSE)
 		#A.sr[n.age,n.age] <- 0		#==>comment out if using a plus group
 
 		if (i == 1) {
