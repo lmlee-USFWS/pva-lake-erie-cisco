@@ -7,14 +7,13 @@ library(popbio)
 library(readxl)
 library(reshape2)
 library(rhandsontable)
-library(rsconnect)
 library(shiny)
 library(shinyalert)
 library(shinycssloaders)
 library(shinydashboard)
 library(shinyjs)
 library(utils)
-library(xlsx)
+
 
 ##########################################################################################################
 ##  PREP  ################################################################################################
