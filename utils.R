@@ -28,7 +28,7 @@ colnames(sim.bio) <- c("Linf","K","t0","lw.a","lw.b","f.a","f.b","f.type","eggsu
 sim.length <- data.frame()
 sim.weight <- data.frame()
 sim.natmort <- data.frame()
-sim.survival <- data.frame()
+#sim.survival <- data.frame()
 sim.fecundity <- data.frame()
 sim.eggS <- data.frame()
 sim.fryS <- data.frame()
@@ -90,21 +90,21 @@ for (j in 1:n.simulations) {
 	
 	natmort <- 3 * (weight^-0.288)
 	
-	Mchange <- runif(1, -0.30, 0.30)
-	natmort <- as.double(natmort + (natmort * Mchange))
+#	Mchange <- runif(1, -0.30, 0.30)
+#	natmort <- as.double(natmort + (natmort * Mchange))
 
 
-  if (fishery.use == "Yes") {
-    Z.mort <- natmort + F.partial
-  } else {
-    Z.mort <- natmort
-  }
+#  if (fishery.use == "Yes") {
+#    Z.mort <- natmort + F.partial
+#  } else {
+#    Z.mort <- natmort
+#  }
 	
-	if (customS.use == "Default") {
-	  survival <- exp(-Z.mort)
-	} else {
-	  survival <- S.custom
-	}
+#	if (customS.use == "Default") {
+#	  survival <- exp(-Z.mort)
+#	} else {
+#	  survival <- S.custom
+#	}
 
 	# Store Life History Parameters
 	sim.bio[j,1] <- Linf
@@ -123,7 +123,7 @@ for (j in 1:n.simulations) {
 	sim.length <- rbind(sim.length,length)
   	sim.weight <- rbind(sim.weight,weight)
 	sim.natmort <- rbind(sim.natmort,natmort)
-	sim.survival <- rbind(sim.survival,survival)
+#	sim.survival <- rbind(sim.survival,survival)
 	sim.fecundity <- rbind(sim.fecundity,fecundity)
 	sim.eggS <- rbind(sim.eggS,eggS)
 	sim.fryS <- rbind(sim.fryS,fryS)
@@ -136,15 +136,14 @@ for (j in 1:n.simulations) {
 colnames(sim.length) <- sprintf("Age%02d",1:max(age))
 colnames(sim.weight) <- sprintf("Age%02d",1:max(age))
 colnames(sim.natmort) <- sprintf("Age%02d",1:max(age))
-colnames(sim.survival) <- sprintf("Age%02d",1:max(age))
+#colnames(sim.survival) <- sprintf("Age%02d",1:max(age))
 colnames(sim.fecundity) <- sprintf("Age%02d",1:max(age))
 
 
 #-Save Results-----------------------------------------------------------------------------------------------------------------
 return(list(sim.bio = sim.bio, sim.length = sim.length, sim.weight = sim.weight,
-			sim.natmort = sim.natmort, sim.survival = sim.survival,
-			sim.fecundity = sim.fecundity, sim.eggS = sim.eggS, sim.fryS = sim.fryS,
-			sim.age0S = sim.age0S))
+			sim.natmort = sim.natmort, sim.fecundity = sim.fecundity, sim.eggS = sim.eggS, 
+			sim.fryS = sim.fryS, sim.age0S = sim.age0S))
 }
 
 
@@ -155,7 +154,8 @@ return(list(sim.bio = sim.bio, sim.length = sim.length, sim.weight = sim.weight,
 #==============================================================================================================================
 #=RUN SIMULATIONS==============================================================================================================
 #==============================================================================================================================
-sims.run <- function(n.projections,n.simulations,age,sexratio,maturity,sim.bio,sim.survival,sim.weight,sim.fecundity,
+sims.run <- function(n.projections,n.simulations,age,sexratio,maturity,sim.bio,sim.natmort,
+                     fishery.use,F.partial,customS.use,S.custom,sim.weight,sim.fecundity,
                      sim.eggS,sim.fryS,sim.age0S,stocking.pro,area.lake,thresh.allee,boom.use,int.boom,boom.inc)
 
 {
@@ -206,8 +206,8 @@ for (j in 1:n.simulations) {
 	mx.stocked <- rep(0,max(age))
 
 
-	# Survival of Adult Wild Fish
-  	Sw <- as.numeric(sim.survival[j,])
+	# Natural Mortality of Adult Wild Fish
+  	Mw <- as.numeric(sim.natmort[j,])
 
 
 	# Weight at Age
@@ -224,7 +224,8 @@ for (j in 1:n.simulations) {
 
 
 	# Run Population Projections
-	p <- pop.stockpro(n.projections, sexratio, maturity, fecundity, mx.stocked, Sw, waa, area.lake, thresh.allee,
+	p <- pop.stockpro(n.projections, sexratio, maturity, fecundity, mx.stocked, Mw, 
+	                  fishery.use, F.partial,customS.use, S.custom, waa, area.lake, thresh.allee,
 	                  Segg, Sfry, Sage0, stocking.pro, boom.use, int.boom, boom.inc)
 
 	# Store Projection Results
@@ -281,13 +282,14 @@ return(list(sim.pop = sim.pop, sim.popwt = sim.popwt, sim.wild = sim.wild, sim.s
 #==============================================================================================================================
 #=LESLIE MATRIX POPULATION PROJECTIONS=========================================================================================
 #==============================================================================================================================
-pop.stockpro <- function(n.projections, sexratio, maturity, fecundity, mx.stocked, Sw, waa, area.lake, thresh.allee,
+pop.stockpro <- function(n.projections, sexratio, maturity, fecundity, mx.stocked, Mw, 
+                         fishery.use, F.partial,customS.use, S.custom, waa, area.lake, thresh.allee,
                          Segg, Sfry, Sage0, stocking.pro, boom.use, int.boom, boom.inc )
 {
 
 	n.age <- length(maturity)
 	n.stockpro <- ncol(stocking.pro) - 2
-	x <- length(Sw)
+	x <- length(Mw)
 	t <- n.projections
 
   	n.wild <- matrix(numeric(x * t), nrow = x)
@@ -408,8 +410,22 @@ pop.stockpro <- function(n.projections, sexratio, maturity, fecundity, mx.stocke
     
     mx <- sexratio * maturity * fecundity * Segg * Sfry.boom * Sage0
     
-   # Schange <- runif(1, -0.30, 0.30)
-	 # lx <- as.double(Sw + (Sw * Schange))
+    
+	  Mchange <- runif(1, -0.30, 0.30)
+    Mw <- as.double(Mw + (Mw * Mchange))
+    
+      if (fishery.use == "Yes") {
+        Z.mort <- Mw + F.partial
+      } else {
+        Z.mort <- Mw
+      }
+    
+    	if (customS.use == "Default") {
+    	  Sw <- exp(-Z.mort)
+    	} else {
+    	  Sw <- S.custom
+    	}
+
     lx <- Sw
 		mx.new <- mx * lx
 		A.wild <- make_leslie_mpm(survival = lx, fecundity = mx.new, n_stages = n.age, split = FALSE)

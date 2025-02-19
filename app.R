@@ -14,20 +14,9 @@ library(shinydashboard)
 library(shinyjs)
 library(utils)
 
-
 ##########################################################################################################
 ##  PREP  ################################################################################################
 ###########################################################################################################---------------------------------------------------------------------------------------------------------
-#-CLEAN R CONSOLE-----------------------------------------------------------------------------------------#---------------------------------------------------------------------------------------------------------
-#rm(list=ls(all=TRUE))   #==>Clears the names of any objects
-
-
-#---------------------------------------------------------------------------------------------------------
-#-SET WORKING DIRECTORY-----------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------------------------------
-#setwd("C:/Users/lmlee/OneDrive - DOI/Documents/R work/shiny/lmbase")
-
-
 #---------------------------------------------------------------------------------------------------------
 #-SOURCE EXTERNAL FUNCTIONS-------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------
@@ -834,8 +823,7 @@ server <- function(input, output, session) {
 
     # generate life history parameters
     message("generating life history parameters...")
-    lh <- lifehistory.sims(n.simulations,age,vonB,n.vonB,lw,n.lw,fecund,n.fecund,
-                           earlyS,fishery.use,F.partial,customS.use,S.custom)
+    lh <- lifehistory.sims(n.simulations,age,vonB,n.vonB,lw,n.lw,fecund,n.fecund,earlyS)
     #print(lh)  # Debugging to check the output
    # if (is.null(lh$sim.bio) || nrow(lh$sim.bio) == 0) {
    #     stop("Simulation result is empty or NULL.")
@@ -847,7 +835,8 @@ server <- function(input, output, session) {
     message("running simulations and population projections...")
       withProgress(message="Running simulations", value = 0,{
       simpro <- sims.run(n.projections,n.simulations,age,sexratio,mat.cisco$maturity,
-                         lh$sim.bio,lh$sim.survival,lh$sim.weight,lh$sim.fecundity,
+                         lh$sim.bio,lh$sim.natmort,fishery.use,F.partial,
+                         customS.use,S.custom,lh$sim.weight,lh$sim.fecundity,
                          lh$sim.eggS,lh$sim.fryS,lh$sim.age0S,stocking.pro,
                          area.lake,thresh.allee,boom.use,int.boom,boom.inc)
       message("...simulations and population projections done")
