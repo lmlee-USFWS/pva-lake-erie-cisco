@@ -4,8 +4,6 @@
 
 This repository contains a R Shiny application that allows users to run a population viability analysis for Cisco in Lake Erie. The analysis is based on a stochastic Leslie matrix projection model (female-only). The model computes population persistence for user-specified scenarios.
 
-Details describing the model and preliminary results can be found in this [white paper](https://github.com/lmlee-USFWS/pva-lake-erie-cisco/blob/main/wp_PVALakeErieCisco_FollowUp_final.pdf).
-
 Information about restoring coregonines to the Great Lakes can be found [here](https://www.greatlakesciscoes.org/).
 
 ## Installation
