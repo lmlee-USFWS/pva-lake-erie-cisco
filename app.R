@@ -781,7 +781,7 @@ server <- function(input, output, session) {
    
    if (any(stocking.pro$age == 0)) {
      check3 <- subset(stocking.pro,stocking.pro$age == 0)
-     if (any(check3$month < 7)) {
+     if (any(check3$month < 6)) {
        validate("age 0 can only be stocked in months 6 through 12")
      }
    }   
