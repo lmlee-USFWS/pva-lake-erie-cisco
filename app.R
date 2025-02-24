@@ -330,7 +330,7 @@ ui <- dashboardPage(skin = "blue",
             ##################################################
             tabItem(tabName = "menuInfo",
                             fluidRow(valueBox("Additional Info","Check here for latest update information",icon = shiny::icon("info"),width=9)),
-                            fluidRow("Last update: 5 February 2025"),
+                            fluidRow("Last update: 24 February 2025"),
                             fluidRow("Issue tracking: laura_lee@fws.gov"))
 
             )
